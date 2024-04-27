@@ -1,0 +1,2780 @@
+Terminals unused in grammar
+
+   MAIN
+   ARGS
+   ERROR
+
+
+State 32 conflicts: 1 shift/reduce
+State 54 conflicts: 1 shift/reduce
+State 69 conflicts: 1 shift/reduce
+State 83 conflicts: 2 shift/reduce
+State 88 conflicts: 18 reduce/reduce
+State 92 conflicts: 11 reduce/reduce
+State 95 conflicts: 1 shift/reduce
+State 108 conflicts: 1 shift/reduce
+State 131 conflicts: 1 shift/reduce
+State 136 conflicts: 11 shift/reduce
+State 149 conflicts: 11 shift/reduce
+State 150 conflicts: 11 shift/reduce
+State 151 conflicts: 11 reduce/reduce
+State 152 conflicts: 11 reduce/reduce
+State 169 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: class_decl_list
+    2        | error RBRACE
+
+    3 class_decl_list: class_decl
+    4                | class_decl_list class_decl
+
+    5 $@1: /* empty */
+
+    6 class_decl: access_modfr CLASS ID $@1 LBRACE member_decl_list RBRACE
+
+    7 member_decl_list: member_decl
+    8                 | member_decl_list member_decl
+
+    9 $@2: /* empty */
+
+   10 member_decl: access_modfr mdfr TYPES ID $@2 member_second_part
+
+   11 member_second_part: SEMICOLON
+
+   12 $@3: /* empty */
+
+   13 member_second_part: LPAREN arg_list RPAREN LBRACE $@3 stmt_list RBRACE
+   14                   | error RBRACE
+   15                   | error SEMICOLON
+
+   16 mdfr: /* empty */
+   17     | STATIC
+   18     | FINAL
+
+   19 arg_list: arg
+   20         | arg_list COMMA arg
+   21         | arg_list COMMA
+   22         | /* empty */
+
+   23 arg: TYPES ID
+   24    | TYPES
+
+   25 access_modfr: PUBLIC
+   26             | PRIVATE
+   27             | PROTECTED
+
+   28 TYPES: TYPE empty_brackets
+
+   29 empty_brackets: /* empty */
+   30               | empty_brackets LBRACKET RBRACKET
+   31               | error SEMICOLON
+
+   32 TYPE: INT
+   33     | DOUBLE
+   34     | BOOLEAN
+   35     | CHAR
+   36     | FLOAT
+   37     | VOID
+   38     | STRING
+
+   39 stmt_list: /* empty */
+   40          | stmt_list stmt
+   41          | error SEMICOLON
+
+   42 stmt: LBRACE stmt_list RBRACE
+   43     | expr SEMICOLON
+   44     | if_stmt
+   45     | while_stmt
+   46     | for_stmt
+   47     | return_stmt
+   48     | decl_stmt
+
+   49 if_stmt: IF LPAREN log_expr RPAREN stmt else_part
+
+   50 else_part: ELSE stmt
+   51          | /* empty */
+
+   52 while_stmt: WHILE LPAREN log_expr RPAREN stmt
+
+   53 for_stmt: FOR LPAREN expr SEMICOLON log_expr SEMICOLON expr RPAREN stmt
+
+   54 return_stmt: RETURN expr SEMICOLON
+   55            | RETURN SEMICOLON
+
+   56 decl_stmt: TYPES decl_ids SEMICOLON
+   57          | error SEMICOLON
+
+   58 decl_ids: decl_id
+   59         | decl_ids COMMA decl_id
+   60         | error SEMICOLON
+
+   61 decl_id: ID
+
+   62 $@4: /* empty */
+
+   63 decl_id: ID $@4 ASSIGN expr
+   64        | error COMMA
+
+   65 expr: asg_expr
+   66     | arm_expr
+   67     | log_expr
+   68     | LPAREN expr RPAREN
+   69     | diff_ids
+
+   70 asg_expr: ID asg_op expr
+   71         | ID INC
+   72         | ID DEC
+
+   73 asg_op: PLUSASG
+   74       | MINUSASG
+   75       | TIMESASG
+   76       | DIVIDEASG
+   77       | ASSIGN
+
+   78 arm_expr: expr armop expr
+   79         | literal
+
+   80 log_expr: log_expr AND log_expr
+   81         | log_expr OR log_expr
+   82         | NOT log_expr
+   83         | expr relop expr
+   84         | LPAREN log_expr RPAREN
+   85         | TRUE
+   86         | FALSE
+
+   87 relop: EQ
+   88      | NE
+   89      | LT
+   90      | GT
+   91      | LE
+   92      | GE
+
+   93 armop: PLUS
+   94      | MINUS
+   95      | TIMES
+   96      | DIVIDE
+   97      | MOD
+
+   98 literal: NUMBER
+   99        | STRING
+  100        | CHARACTER
+
+  101 diff_ids: mem_access
+  102         | array_acess
+  103         | method_call
+
+  104 mem_access: mem_access DOT mem_access
+  105           | ID
+  106           | method_call
+
+  107 array_acess: diff_ids brackets
+
+  108 method_call: ID LPAREN pass_args RPAREN
+  109            | ID LPAREN RPAREN
+
+  110 pass_args: pass_args COMMA expr
+  111          | expr
+  112          | /* empty */
+
+  113 brackets: brackets LBRACKET expr RBRACKET
+  114         | LBRACKET expr RBRACKET
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256) 2 14 15 31 41 57 60 64
+OR (258) 81
+AND (259) 80
+NE (260) 88
+EQ (261) 87
+GE (262) 92
+LE (263) 91
+GT (264) 90
+LT (265) 89
+MINUS (266) 94
+PLUS (267) 93
+MOD (268) 97
+DIVIDE (269) 96
+TIMES (270) 95
+NOT (271) 82
+DOT (272) 104
+INT (273) 32
+DOUBLE (274) 33
+BOOLEAN (275) 34
+CHAR (276) 35
+ID (277) 6 10 23 61 63 70 71 72 105 108 109
+FLOAT (278) 36
+VOID (279) 37
+STRING (280) 38 99
+PUBLIC (281) 25
+PRIVATE (282) 26
+PROTECTED (283) 27
+CLASS (284) 6
+STATIC (285) 17
+FINAL (286) 18
+IF (287) 49
+ELSE (288) 50
+WHILE (289) 52
+FOR (290) 53
+RETURN (291) 54 55
+MAIN (292)
+ARGS (293)
+CHARACTER (294) 100
+NUMBER (295) 98
+ERROR (296)
+INC (297) 71
+DEC (298) 72
+SEMICOLON (299) 11 15 31 41 43 53 54 55 56 57 60
+COMMA (300) 20 21 59 64 110
+LPAREN (301) 13 49 52 53 68 84 108 109
+RPAREN (302) 13 49 52 53 68 84 108 109
+LBRACE (303) 6 13 42
+RBRACE (304) 2 6 13 14 42
+PLUSASG (305) 73
+MINUSASG (306) 74
+TIMESASG (307) 75
+DIVIDEASG (308) 76
+ASSIGN (309) 63 77
+LBRACKET (310) 30 113 114
+RBRACKET (311) 30 113 114
+TRUE (312) 85
+FALSE (313) 86
+
+
+Nonterminals, with rules where they appear
+
+$accept (59)
+    on left: 0
+program (60)
+    on left: 1 2, on right: 0
+class_decl_list (61)
+    on left: 3 4, on right: 1 4
+class_decl (62)
+    on left: 6, on right: 3 4
+$@1 (63)
+    on left: 5, on right: 6
+member_decl_list (64)
+    on left: 7 8, on right: 6 8
+member_decl (65)
+    on left: 10, on right: 7 8
+$@2 (66)
+    on left: 9, on right: 10
+member_second_part (67)
+    on left: 11 13 14 15, on right: 10
+$@3 (68)
+    on left: 12, on right: 13
+mdfr (69)
+    on left: 16 17 18, on right: 10
+arg_list (70)
+    on left: 19 20 21 22, on right: 13 20 21
+arg (71)
+    on left: 23 24, on right: 19 20
+access_modfr (72)
+    on left: 25 26 27, on right: 6 10
+TYPES (73)
+    on left: 28, on right: 10 23 24 56
+empty_brackets (74)
+    on left: 29 30 31, on right: 28 30
+TYPE (75)
+    on left: 32 33 34 35 36 37 38, on right: 28
+stmt_list (76)
+    on left: 39 40 41, on right: 13 40 42
+stmt (77)
+    on left: 42 43 44 45 46 47 48, on right: 40 49 50 52 53
+if_stmt (78)
+    on left: 49, on right: 44
+else_part (79)
+    on left: 50 51, on right: 49
+while_stmt (80)
+    on left: 52, on right: 45
+for_stmt (81)
+    on left: 53, on right: 46
+return_stmt (82)
+    on left: 54 55, on right: 47
+decl_stmt (83)
+    on left: 56 57, on right: 48
+decl_ids (84)
+    on left: 58 59 60, on right: 56 59
+decl_id (85)
+    on left: 61 63 64, on right: 58 59
+$@4 (86)
+    on left: 62, on right: 63
+expr (87)
+    on left: 65 66 67 68 69, on right: 43 53 54 63 68 70 78 83 110
+    111 113 114
+asg_expr (88)
+    on left: 70 71 72, on right: 65
+asg_op (89)
+    on left: 73 74 75 76 77, on right: 70
+arm_expr (90)
+    on left: 78 79, on right: 66
+log_expr (91)
+    on left: 80 81 82 83 84 85 86, on right: 49 52 53 67 80 81 82 84
+relop (92)
+    on left: 87 88 89 90 91 92, on right: 83
+armop (93)
+    on left: 93 94 95 96 97, on right: 78
+literal (94)
+    on left: 98 99 100, on right: 79
+diff_ids (95)
+    on left: 101 102 103, on right: 69 107
+mem_access (96)
+    on left: 104 105 106, on right: 101 104
+array_acess (97)
+    on left: 107, on right: 102
+method_call (98)
+    on left: 108 109, on right: 103 106
+pass_args (99)
+    on left: 110 111 112, on right: 108 110
+brackets (100)
+    on left: 113 114, on right: 107 113
+
+
+state 0
+
+    0 $accept: . program $end
+
+    error      shift, and go to state 1
+    PUBLIC     shift, and go to state 2
+    PRIVATE    shift, and go to state 3
+    PROTECTED  shift, and go to state 4
+
+    program          go to state 5
+    class_decl_list  go to state 6
+    class_decl       go to state 7
+    access_modfr     go to state 8
+
+
+state 1
+
+    2 program: error . RBRACE
+
+    RBRACE  shift, and go to state 9
+
+
+state 2
+
+   25 access_modfr: PUBLIC .
+
+    $default  reduce using rule 25 (access_modfr)
+
+
+state 3
+
+   26 access_modfr: PRIVATE .
+
+    $default  reduce using rule 26 (access_modfr)
+
+
+state 4
+
+   27 access_modfr: PROTECTED .
+
+    $default  reduce using rule 27 (access_modfr)
+
+
+state 5
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 10
+
+
+state 6
+
+    1 program: class_decl_list .
+    4 class_decl_list: class_decl_list . class_decl
+
+    PUBLIC     shift, and go to state 2
+    PRIVATE    shift, and go to state 3
+    PROTECTED  shift, and go to state 4
+
+    $default  reduce using rule 1 (program)
+
+    class_decl    go to state 11
+    access_modfr  go to state 8
+
+
+state 7
+
+    3 class_decl_list: class_decl .
+
+    $default  reduce using rule 3 (class_decl_list)
+
+
+state 8
+
+    6 class_decl: access_modfr . CLASS ID $@1 LBRACE member_decl_list RBRACE
+
+    CLASS  shift, and go to state 12
+
+
+state 9
+
+    2 program: error RBRACE .
+
+    $default  reduce using rule 2 (program)
+
+
+state 10
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+state 11
+
+    4 class_decl_list: class_decl_list class_decl .
+
+    $default  reduce using rule 4 (class_decl_list)
+
+
+state 12
+
+    6 class_decl: access_modfr CLASS . ID $@1 LBRACE member_decl_list RBRACE
+
+    ID  shift, and go to state 13
+
+
+state 13
+
+    6 class_decl: access_modfr CLASS ID . $@1 LBRACE member_decl_list RBRACE
+
+    $default  reduce using rule 5 ($@1)
+
+    $@1  go to state 14
+
+
+state 14
+
+    6 class_decl: access_modfr CLASS ID $@1 . LBRACE member_decl_list RBRACE
+
+    LBRACE  shift, and go to state 15
+
+
+state 15
+
+    6 class_decl: access_modfr CLASS ID $@1 LBRACE . member_decl_list RBRACE
+
+    PUBLIC     shift, and go to state 2
+    PRIVATE    shift, and go to state 3
+    PROTECTED  shift, and go to state 4
+
+    member_decl_list  go to state 16
+    member_decl       go to state 17
+    access_modfr      go to state 18
+
+
+state 16
+
+    6 class_decl: access_modfr CLASS ID $@1 LBRACE member_decl_list . RBRACE
+    8 member_decl_list: member_decl_list . member_decl
+
+    PUBLIC     shift, and go to state 2
+    PRIVATE    shift, and go to state 3
+    PROTECTED  shift, and go to state 4
+    RBRACE     shift, and go to state 19
+
+    member_decl   go to state 20
+    access_modfr  go to state 18
+
+
+state 17
+
+    7 member_decl_list: member_decl .
+
+    $default  reduce using rule 7 (member_decl_list)
+
+
+state 18
+
+   10 member_decl: access_modfr . mdfr TYPES ID $@2 member_second_part
+
+    STATIC  shift, and go to state 21
+    FINAL   shift, and go to state 22
+
+    $default  reduce using rule 16 (mdfr)
+
+    mdfr  go to state 23
+
+
+state 19
+
+    6 class_decl: access_modfr CLASS ID $@1 LBRACE member_decl_list RBRACE .
+
+    $default  reduce using rule 6 (class_decl)
+
+
+state 20
+
+    8 member_decl_list: member_decl_list member_decl .
+
+    $default  reduce using rule 8 (member_decl_list)
+
+
+state 21
+
+   17 mdfr: STATIC .
+
+    $default  reduce using rule 17 (mdfr)
+
+
+state 22
+
+   18 mdfr: FINAL .
+
+    $default  reduce using rule 18 (mdfr)
+
+
+state 23
+
+   10 member_decl: access_modfr mdfr . TYPES ID $@2 member_second_part
+
+    INT      shift, and go to state 24
+    DOUBLE   shift, and go to state 25
+    BOOLEAN  shift, and go to state 26
+    CHAR     shift, and go to state 27
+    FLOAT    shift, and go to state 28
+    VOID     shift, and go to state 29
+    STRING   shift, and go to state 30
+
+    TYPES  go to state 31
+    TYPE   go to state 32
+
+
+state 24
+
+   32 TYPE: INT .
+
+    $default  reduce using rule 32 (TYPE)
+
+
+state 25
+
+   33 TYPE: DOUBLE .
+
+    $default  reduce using rule 33 (TYPE)
+
+
+state 26
+
+   34 TYPE: BOOLEAN .
+
+    $default  reduce using rule 34 (TYPE)
+
+
+state 27
+
+   35 TYPE: CHAR .
+
+    $default  reduce using rule 35 (TYPE)
+
+
+state 28
+
+   36 TYPE: FLOAT .
+
+    $default  reduce using rule 36 (TYPE)
+
+
+state 29
+
+   37 TYPE: VOID .
+
+    $default  reduce using rule 37 (TYPE)
+
+
+state 30
+
+   38 TYPE: STRING .
+
+    $default  reduce using rule 38 (TYPE)
+
+
+state 31
+
+   10 member_decl: access_modfr mdfr TYPES . ID $@2 member_second_part
+
+    ID  shift, and go to state 33
+
+
+state 32
+
+   28 TYPES: TYPE . empty_brackets
+
+    error  shift, and go to state 34
+
+    error     [reduce using rule 29 (empty_brackets)]
+    ID        reduce using rule 29 (empty_brackets)
+    COMMA     reduce using rule 29 (empty_brackets)
+    RPAREN    reduce using rule 29 (empty_brackets)
+    LBRACKET  reduce using rule 29 (empty_brackets)
+
+    empty_brackets  go to state 35
+
+
+state 33
+
+   10 member_decl: access_modfr mdfr TYPES ID . $@2 member_second_part
+
+    $default  reduce using rule 9 ($@2)
+
+    $@2  go to state 36
+
+
+state 34
+
+   31 empty_brackets: error . SEMICOLON
+
+    SEMICOLON  shift, and go to state 37
+
+
+state 35
+
+   28 TYPES: TYPE empty_brackets .
+   30 empty_brackets: empty_brackets . LBRACKET RBRACKET
+
+    LBRACKET  shift, and go to state 38
+
+    $default  reduce using rule 28 (TYPES)
+
+
+state 36
+
+   10 member_decl: access_modfr mdfr TYPES ID $@2 . member_second_part
+
+    error      shift, and go to state 39
+    SEMICOLON  shift, and go to state 40
+    LPAREN     shift, and go to state 41
+
+    member_second_part  go to state 42
+
+
+state 37
+
+   31 empty_brackets: error SEMICOLON .
+
+    $default  reduce using rule 31 (empty_brackets)
+
+
+state 38
+
+   30 empty_brackets: empty_brackets LBRACKET . RBRACKET
+
+    RBRACKET  shift, and go to state 43
+
+
+state 39
+
+   14 member_second_part: error . RBRACE
+   15                   | error . SEMICOLON
+
+    SEMICOLON  shift, and go to state 44
+    RBRACE     shift, and go to state 45
+
+
+state 40
+
+   11 member_second_part: SEMICOLON .
+
+    $default  reduce using rule 11 (member_second_part)
+
+
+state 41
+
+   13 member_second_part: LPAREN . arg_list RPAREN LBRACE $@3 stmt_list RBRACE
+
+    INT      shift, and go to state 24
+    DOUBLE   shift, and go to state 25
+    BOOLEAN  shift, and go to state 26
+    CHAR     shift, and go to state 27
+    FLOAT    shift, and go to state 28
+    VOID     shift, and go to state 29
+    STRING   shift, and go to state 30
+
+    $default  reduce using rule 22 (arg_list)
+
+    arg_list  go to state 46
+    arg       go to state 47
+    TYPES     go to state 48
+    TYPE      go to state 32
+
+
+state 42
+
+   10 member_decl: access_modfr mdfr TYPES ID $@2 member_second_part .
+
+    $default  reduce using rule 10 (member_decl)
+
+
+state 43
+
+   30 empty_brackets: empty_brackets LBRACKET RBRACKET .
+
+    $default  reduce using rule 30 (empty_brackets)
+
+
+state 44
+
+   15 member_second_part: error SEMICOLON .
+
+    $default  reduce using rule 15 (member_second_part)
+
+
+state 45
+
+   14 member_second_part: error RBRACE .
+
+    $default  reduce using rule 14 (member_second_part)
+
+
+state 46
+
+   13 member_second_part: LPAREN arg_list . RPAREN LBRACE $@3 stmt_list RBRACE
+   20 arg_list: arg_list . COMMA arg
+   21         | arg_list . COMMA
+
+    COMMA   shift, and go to state 49
+    RPAREN  shift, and go to state 50
+
+
+state 47
+
+   19 arg_list: arg .
+
+    $default  reduce using rule 19 (arg_list)
+
+
+state 48
+
+   23 arg: TYPES . ID
+   24    | TYPES .
+
+    ID  shift, and go to state 51
+
+    $default  reduce using rule 24 (arg)
+
+
+state 49
+
+   20 arg_list: arg_list COMMA . arg
+   21         | arg_list COMMA .
+
+    INT      shift, and go to state 24
+    DOUBLE   shift, and go to state 25
+    BOOLEAN  shift, and go to state 26
+    CHAR     shift, and go to state 27
+    FLOAT    shift, and go to state 28
+    VOID     shift, and go to state 29
+    STRING   shift, and go to state 30
+
+    $default  reduce using rule 21 (arg_list)
+
+    arg    go to state 52
+    TYPES  go to state 48
+    TYPE   go to state 32
+
+
+state 50
+
+   13 member_second_part: LPAREN arg_list RPAREN . LBRACE $@3 stmt_list RBRACE
+
+    LBRACE  shift, and go to state 53
+
+
+state 51
+
+   23 arg: TYPES ID .
+
+    $default  reduce using rule 23 (arg)
+
+
+state 52
+
+   20 arg_list: arg_list COMMA arg .
+
+    $default  reduce using rule 20 (arg_list)
+
+
+state 53
+
+   13 member_second_part: LPAREN arg_list RPAREN LBRACE . $@3 stmt_list RBRACE
+
+    $default  reduce using rule 12 ($@3)
+
+    $@3  go to state 54
+
+
+state 54
+
+   13 member_second_part: LPAREN arg_list RPAREN LBRACE $@3 . stmt_list RBRACE
+
+    error  shift, and go to state 55
+
+    error      [reduce using rule 39 (stmt_list)]
+    NOT        reduce using rule 39 (stmt_list)
+    INT        reduce using rule 39 (stmt_list)
+    DOUBLE     reduce using rule 39 (stmt_list)
+    BOOLEAN    reduce using rule 39 (stmt_list)
+    CHAR       reduce using rule 39 (stmt_list)
+    ID         reduce using rule 39 (stmt_list)
+    FLOAT      reduce using rule 39 (stmt_list)
+    VOID       reduce using rule 39 (stmt_list)
+    STRING     reduce using rule 39 (stmt_list)
+    IF         reduce using rule 39 (stmt_list)
+    WHILE      reduce using rule 39 (stmt_list)
+    FOR        reduce using rule 39 (stmt_list)
+    RETURN     reduce using rule 39 (stmt_list)
+    CHARACTER  reduce using rule 39 (stmt_list)
+    NUMBER     reduce using rule 39 (stmt_list)
+    LPAREN     reduce using rule 39 (stmt_list)
+    LBRACE     reduce using rule 39 (stmt_list)
+    RBRACE     reduce using rule 39 (stmt_list)
+    TRUE       reduce using rule 39 (stmt_list)
+    FALSE      reduce using rule 39 (stmt_list)
+
+    stmt_list  go to state 56
+
+
+state 55
+
+   41 stmt_list: error . SEMICOLON
+
+    SEMICOLON  shift, and go to state 57
+
+
+state 56
+
+   13 member_second_part: LPAREN arg_list RPAREN LBRACE $@3 stmt_list . RBRACE
+   40 stmt_list: stmt_list . stmt
+
+    error      shift, and go to state 58
+    NOT        shift, and go to state 59
+    INT        shift, and go to state 24
+    DOUBLE     shift, and go to state 25
+    BOOLEAN    shift, and go to state 26
+    CHAR       shift, and go to state 27
+    ID         shift, and go to state 60
+    FLOAT      shift, and go to state 28
+    VOID       shift, and go to state 29
+    STRING     shift, and go to state 61
+    IF         shift, and go to state 62
+    WHILE      shift, and go to state 63
+    FOR        shift, and go to state 64
+    RETURN     shift, and go to state 65
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    LBRACE     shift, and go to state 69
+    RBRACE     shift, and go to state 70
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    TYPES        go to state 73
+    TYPE         go to state 32
+    stmt         go to state 74
+    if_stmt      go to state 75
+    while_stmt   go to state 76
+    for_stmt     go to state 77
+    return_stmt  go to state 78
+    decl_stmt    go to state 79
+    expr         go to state 80
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 83
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 57
+
+   41 stmt_list: error SEMICOLON .
+
+    $default  reduce using rule 41 (stmt_list)
+
+
+state 58
+
+   57 decl_stmt: error . SEMICOLON
+
+    SEMICOLON  shift, and go to state 89
+
+
+state 59
+
+   82 log_expr: NOT . log_expr
+
+    NOT        shift, and go to state 59
+    ID         shift, and go to state 60
+    STRING     shift, and go to state 90
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    expr         go to state 91
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 92
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 60
+
+   70 asg_expr: ID . asg_op expr
+   71         | ID . INC
+   72         | ID . DEC
+  105 mem_access: ID .
+  108 method_call: ID . LPAREN pass_args RPAREN
+  109            | ID . LPAREN RPAREN
+
+    INC        shift, and go to state 93
+    DEC        shift, and go to state 94
+    LPAREN     shift, and go to state 95
+    PLUSASG    shift, and go to state 96
+    MINUSASG   shift, and go to state 97
+    TIMESASG   shift, and go to state 98
+    DIVIDEASG  shift, and go to state 99
+    ASSIGN     shift, and go to state 100
+
+    $default  reduce using rule 105 (mem_access)
+
+    asg_op  go to state 101
+
+
+state 61
+
+   38 TYPE: STRING .
+   99 literal: STRING .
+
+    error     reduce using rule 38 (TYPE)
+    ID        reduce using rule 38 (TYPE)
+    LBRACKET  reduce using rule 38 (TYPE)
+    $default  reduce using rule 99 (literal)
+
+
+state 62
+
+   49 if_stmt: IF . LPAREN log_expr RPAREN stmt else_part
+
+    LPAREN  shift, and go to state 102
+
+
+state 63
+
+   52 while_stmt: WHILE . LPAREN log_expr RPAREN stmt
+
+    LPAREN  shift, and go to state 103
+
+
+state 64
+
+   53 for_stmt: FOR . LPAREN expr SEMICOLON log_expr SEMICOLON expr RPAREN stmt
+
+    LPAREN  shift, and go to state 104
+
+
+state 65
+
+   54 return_stmt: RETURN . expr SEMICOLON
+   55            | RETURN . SEMICOLON
+
+    NOT        shift, and go to state 59
+    ID         shift, and go to state 60
+    STRING     shift, and go to state 90
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    SEMICOLON  shift, and go to state 105
+    LPAREN     shift, and go to state 68
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    expr         go to state 106
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 83
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 66
+
+  100 literal: CHARACTER .
+
+    $default  reduce using rule 100 (literal)
+
+
+state 67
+
+   98 literal: NUMBER .
+
+    $default  reduce using rule 98 (literal)
+
+
+state 68
+
+   68 expr: LPAREN . expr RPAREN
+   84 log_expr: LPAREN . log_expr RPAREN
+
+    NOT        shift, and go to state 59
+    ID         shift, and go to state 60
+    STRING     shift, and go to state 90
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    expr         go to state 107
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 108
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 69
+
+   42 stmt: LBRACE . stmt_list RBRACE
+
+    error  shift, and go to state 55
+
+    error      [reduce using rule 39 (stmt_list)]
+    NOT        reduce using rule 39 (stmt_list)
+    INT        reduce using rule 39 (stmt_list)
+    DOUBLE     reduce using rule 39 (stmt_list)
+    BOOLEAN    reduce using rule 39 (stmt_list)
+    CHAR       reduce using rule 39 (stmt_list)
+    ID         reduce using rule 39 (stmt_list)
+    FLOAT      reduce using rule 39 (stmt_list)
+    VOID       reduce using rule 39 (stmt_list)
+    STRING     reduce using rule 39 (stmt_list)
+    IF         reduce using rule 39 (stmt_list)
+    WHILE      reduce using rule 39 (stmt_list)
+    FOR        reduce using rule 39 (stmt_list)
+    RETURN     reduce using rule 39 (stmt_list)
+    CHARACTER  reduce using rule 39 (stmt_list)
+    NUMBER     reduce using rule 39 (stmt_list)
+    LPAREN     reduce using rule 39 (stmt_list)
+    LBRACE     reduce using rule 39 (stmt_list)
+    RBRACE     reduce using rule 39 (stmt_list)
+    TRUE       reduce using rule 39 (stmt_list)
+    FALSE      reduce using rule 39 (stmt_list)
+
+    stmt_list  go to state 109
+
+
+state 70
+
+   13 member_second_part: LPAREN arg_list RPAREN LBRACE $@3 stmt_list RBRACE .
+
+    $default  reduce using rule 13 (member_second_part)
+
+
+state 71
+
+   85 log_expr: TRUE .
+
+    $default  reduce using rule 85 (log_expr)
+
+
+state 72
+
+   86 log_expr: FALSE .
+
+    $default  reduce using rule 86 (log_expr)
+
+
+state 73
+
+   56 decl_stmt: TYPES . decl_ids SEMICOLON
+
+    error  shift, and go to state 110
+    ID     shift, and go to state 111
+
+    decl_ids  go to state 112
+    decl_id   go to state 113
+
+
+state 74
+
+   40 stmt_list: stmt_list stmt .
+
+    $default  reduce using rule 40 (stmt_list)
+
+
+state 75
+
+   44 stmt: if_stmt .
+
+    $default  reduce using rule 44 (stmt)
+
+
+state 76
+
+   45 stmt: while_stmt .
+
+    $default  reduce using rule 45 (stmt)
+
+
+state 77
+
+   46 stmt: for_stmt .
+
+    $default  reduce using rule 46 (stmt)
+
+
+state 78
+
+   47 stmt: return_stmt .
+
+    $default  reduce using rule 47 (stmt)
+
+
+state 79
+
+   48 stmt: decl_stmt .
+
+    $default  reduce using rule 48 (stmt)
+
+
+state 80
+
+   43 stmt: expr . SEMICOLON
+   78 arm_expr: expr . armop expr
+   83 log_expr: expr . relop expr
+
+    NE         shift, and go to state 114
+    EQ         shift, and go to state 115
+    GE         shift, and go to state 116
+    LE         shift, and go to state 117
+    GT         shift, and go to state 118
+    LT         shift, and go to state 119
+    MINUS      shift, and go to state 120
+    PLUS       shift, and go to state 121
+    MOD        shift, and go to state 122
+    DIVIDE     shift, and go to state 123
+    TIMES      shift, and go to state 124
+    SEMICOLON  shift, and go to state 125
+
+    relop  go to state 126
+    armop  go to state 127
+
+
+state 81
+
+   65 expr: asg_expr .
+
+    $default  reduce using rule 65 (expr)
+
+
+state 82
+
+   66 expr: arm_expr .
+
+    $default  reduce using rule 66 (expr)
+
+
+state 83
+
+   67 expr: log_expr .
+   80 log_expr: log_expr . AND log_expr
+   81         | log_expr . OR log_expr
+
+    OR   shift, and go to state 128
+    AND  shift, and go to state 129
+
+    OR        [reduce using rule 67 (expr)]
+    AND       [reduce using rule 67 (expr)]
+    $default  reduce using rule 67 (expr)
+
+
+state 84
+
+   79 arm_expr: literal .
+
+    $default  reduce using rule 79 (arm_expr)
+
+
+state 85
+
+   69 expr: diff_ids .
+  107 array_acess: diff_ids . brackets
+
+    LBRACKET  shift, and go to state 130
+
+    $default  reduce using rule 69 (expr)
+
+    brackets  go to state 131
+
+
+state 86
+
+  101 diff_ids: mem_access .
+  104 mem_access: mem_access . DOT mem_access
+
+    DOT  shift, and go to state 132
+
+    $default  reduce using rule 101 (diff_ids)
+
+
+state 87
+
+  102 diff_ids: array_acess .
+
+    $default  reduce using rule 102 (diff_ids)
+
+
+state 88
+
+  103 diff_ids: method_call .
+  106 mem_access: method_call .
+
+    OR         reduce using rule 103 (diff_ids)
+    OR         [reduce using rule 106 (mem_access)]
+    AND        reduce using rule 103 (diff_ids)
+    AND        [reduce using rule 106 (mem_access)]
+    NE         reduce using rule 103 (diff_ids)
+    NE         [reduce using rule 106 (mem_access)]
+    EQ         reduce using rule 103 (diff_ids)
+    EQ         [reduce using rule 106 (mem_access)]
+    GE         reduce using rule 103 (diff_ids)
+    GE         [reduce using rule 106 (mem_access)]
+    LE         reduce using rule 103 (diff_ids)
+    LE         [reduce using rule 106 (mem_access)]
+    GT         reduce using rule 103 (diff_ids)
+    GT         [reduce using rule 106 (mem_access)]
+    LT         reduce using rule 103 (diff_ids)
+    LT         [reduce using rule 106 (mem_access)]
+    MINUS      reduce using rule 103 (diff_ids)
+    MINUS      [reduce using rule 106 (mem_access)]
+    PLUS       reduce using rule 103 (diff_ids)
+    PLUS       [reduce using rule 106 (mem_access)]
+    MOD        reduce using rule 103 (diff_ids)
+    MOD        [reduce using rule 106 (mem_access)]
+    DIVIDE     reduce using rule 103 (diff_ids)
+    DIVIDE     [reduce using rule 106 (mem_access)]
+    TIMES      reduce using rule 103 (diff_ids)
+    TIMES      [reduce using rule 106 (mem_access)]
+    DOT        reduce using rule 106 (mem_access)
+    SEMICOLON  reduce using rule 103 (diff_ids)
+    SEMICOLON  [reduce using rule 106 (mem_access)]
+    COMMA      reduce using rule 103 (diff_ids)
+    COMMA      [reduce using rule 106 (mem_access)]
+    RPAREN     reduce using rule 103 (diff_ids)
+    RPAREN     [reduce using rule 106 (mem_access)]
+    LBRACKET   reduce using rule 103 (diff_ids)
+    LBRACKET   [reduce using rule 106 (mem_access)]
+    RBRACKET   reduce using rule 103 (diff_ids)
+    RBRACKET   [reduce using rule 106 (mem_access)]
+    $default   reduce using rule 103 (diff_ids)
+
+
+state 89
+
+   57 decl_stmt: error SEMICOLON .
+
+    $default  reduce using rule 57 (decl_stmt)
+
+
+state 90
+
+   99 literal: STRING .
+
+    $default  reduce using rule 99 (literal)
+
+
+state 91
+
+   78 arm_expr: expr . armop expr
+   83 log_expr: expr . relop expr
+
+    NE      shift, and go to state 114
+    EQ      shift, and go to state 115
+    GE      shift, and go to state 116
+    LE      shift, and go to state 117
+    GT      shift, and go to state 118
+    LT      shift, and go to state 119
+    MINUS   shift, and go to state 120
+    PLUS    shift, and go to state 121
+    MOD     shift, and go to state 122
+    DIVIDE  shift, and go to state 123
+    TIMES   shift, and go to state 124
+
+    relop  go to state 126
+    armop  go to state 127
+
+
+state 92
+
+   67 expr: log_expr .
+   80 log_expr: log_expr . AND log_expr
+   81         | log_expr . OR log_expr
+   82         | NOT log_expr .
+
+    OR         reduce using rule 82 (log_expr)
+    AND        reduce using rule 82 (log_expr)
+    NE         reduce using rule 67 (expr)
+    NE         [reduce using rule 82 (log_expr)]
+    EQ         reduce using rule 67 (expr)
+    EQ         [reduce using rule 82 (log_expr)]
+    GE         reduce using rule 67 (expr)
+    GE         [reduce using rule 82 (log_expr)]
+    LE         reduce using rule 67 (expr)
+    LE         [reduce using rule 82 (log_expr)]
+    GT         reduce using rule 67 (expr)
+    GT         [reduce using rule 82 (log_expr)]
+    LT         reduce using rule 67 (expr)
+    LT         [reduce using rule 82 (log_expr)]
+    MINUS      reduce using rule 67 (expr)
+    MINUS      [reduce using rule 82 (log_expr)]
+    PLUS       reduce using rule 67 (expr)
+    PLUS       [reduce using rule 82 (log_expr)]
+    MOD        reduce using rule 67 (expr)
+    MOD        [reduce using rule 82 (log_expr)]
+    DIVIDE     reduce using rule 67 (expr)
+    DIVIDE     [reduce using rule 82 (log_expr)]
+    TIMES      reduce using rule 67 (expr)
+    TIMES      [reduce using rule 82 (log_expr)]
+    SEMICOLON  reduce using rule 82 (log_expr)
+    COMMA      reduce using rule 82 (log_expr)
+    RPAREN     reduce using rule 82 (log_expr)
+    RBRACKET   reduce using rule 82 (log_expr)
+    $default   reduce using rule 67 (expr)
+
+
+state 93
+
+   71 asg_expr: ID INC .
+
+    $default  reduce using rule 71 (asg_expr)
+
+
+state 94
+
+   72 asg_expr: ID DEC .
+
+    $default  reduce using rule 72 (asg_expr)
+
+
+state 95
+
+  108 method_call: ID LPAREN . pass_args RPAREN
+  109            | ID LPAREN . RPAREN
+
+    NOT        shift, and go to state 59
+    ID         shift, and go to state 60
+    STRING     shift, and go to state 90
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    RPAREN     shift, and go to state 133
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    RPAREN    [reduce using rule 112 (pass_args)]
+    $default  reduce using rule 112 (pass_args)
+
+    expr         go to state 134
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 83
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+    pass_args    go to state 135
+
+
+state 96
+
+   73 asg_op: PLUSASG .
+
+    $default  reduce using rule 73 (asg_op)
+
+
+state 97
+
+   74 asg_op: MINUSASG .
+
+    $default  reduce using rule 74 (asg_op)
+
+
+state 98
+
+   75 asg_op: TIMESASG .
+
+    $default  reduce using rule 75 (asg_op)
+
+
+state 99
+
+   76 asg_op: DIVIDEASG .
+
+    $default  reduce using rule 76 (asg_op)
+
+
+state 100
+
+   77 asg_op: ASSIGN .
+
+    $default  reduce using rule 77 (asg_op)
+
+
+state 101
+
+   70 asg_expr: ID asg_op . expr
+
+    NOT        shift, and go to state 59
+    ID         shift, and go to state 60
+    STRING     shift, and go to state 90
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    expr         go to state 136
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 83
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 102
+
+   49 if_stmt: IF LPAREN . log_expr RPAREN stmt else_part
+
+    NOT        shift, and go to state 59
+    ID         shift, and go to state 60
+    STRING     shift, and go to state 90
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    expr         go to state 91
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 137
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 103
+
+   52 while_stmt: WHILE LPAREN . log_expr RPAREN stmt
+
+    NOT        shift, and go to state 59
+    ID         shift, and go to state 60
+    STRING     shift, and go to state 90
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    expr         go to state 91
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 138
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 104
+
+   53 for_stmt: FOR LPAREN . expr SEMICOLON log_expr SEMICOLON expr RPAREN stmt
+
+    NOT        shift, and go to state 59
+    ID         shift, and go to state 60
+    STRING     shift, and go to state 90
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    expr         go to state 139
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 83
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 105
+
+   55 return_stmt: RETURN SEMICOLON .
+
+    $default  reduce using rule 55 (return_stmt)
+
+
+state 106
+
+   54 return_stmt: RETURN expr . SEMICOLON
+   78 arm_expr: expr . armop expr
+   83 log_expr: expr . relop expr
+
+    NE         shift, and go to state 114
+    EQ         shift, and go to state 115
+    GE         shift, and go to state 116
+    LE         shift, and go to state 117
+    GT         shift, and go to state 118
+    LT         shift, and go to state 119
+    MINUS      shift, and go to state 120
+    PLUS       shift, and go to state 121
+    MOD        shift, and go to state 122
+    DIVIDE     shift, and go to state 123
+    TIMES      shift, and go to state 124
+    SEMICOLON  shift, and go to state 140
+
+    relop  go to state 126
+    armop  go to state 127
+
+
+state 107
+
+   68 expr: LPAREN expr . RPAREN
+   78 arm_expr: expr . armop expr
+   83 log_expr: expr . relop expr
+
+    NE      shift, and go to state 114
+    EQ      shift, and go to state 115
+    GE      shift, and go to state 116
+    LE      shift, and go to state 117
+    GT      shift, and go to state 118
+    LT      shift, and go to state 119
+    MINUS   shift, and go to state 120
+    PLUS    shift, and go to state 121
+    MOD     shift, and go to state 122
+    DIVIDE  shift, and go to state 123
+    TIMES   shift, and go to state 124
+    RPAREN  shift, and go to state 141
+
+    relop  go to state 126
+    armop  go to state 127
+
+
+state 108
+
+   67 expr: log_expr .
+   80 log_expr: log_expr . AND log_expr
+   81         | log_expr . OR log_expr
+   84         | LPAREN log_expr . RPAREN
+
+    OR      shift, and go to state 128
+    AND     shift, and go to state 129
+    RPAREN  shift, and go to state 142
+
+    RPAREN    [reduce using rule 67 (expr)]
+    $default  reduce using rule 67 (expr)
+
+
+state 109
+
+   40 stmt_list: stmt_list . stmt
+   42 stmt: LBRACE stmt_list . RBRACE
+
+    error      shift, and go to state 58
+    NOT        shift, and go to state 59
+    INT        shift, and go to state 24
+    DOUBLE     shift, and go to state 25
+    BOOLEAN    shift, and go to state 26
+    CHAR       shift, and go to state 27
+    ID         shift, and go to state 60
+    FLOAT      shift, and go to state 28
+    VOID       shift, and go to state 29
+    STRING     shift, and go to state 61
+    IF         shift, and go to state 62
+    WHILE      shift, and go to state 63
+    FOR        shift, and go to state 64
+    RETURN     shift, and go to state 65
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    LBRACE     shift, and go to state 69
+    RBRACE     shift, and go to state 143
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    TYPES        go to state 73
+    TYPE         go to state 32
+    stmt         go to state 74
+    if_stmt      go to state 75
+    while_stmt   go to state 76
+    for_stmt     go to state 77
+    return_stmt  go to state 78
+    decl_stmt    go to state 79
+    expr         go to state 80
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 83
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 110
+
+   60 decl_ids: error . SEMICOLON
+   64 decl_id: error . COMMA
+
+    SEMICOLON  shift, and go to state 144
+    COMMA      shift, and go to state 145
+
+
+state 111
+
+   61 decl_id: ID .
+   63        | ID . $@4 ASSIGN expr
+
+    ASSIGN    reduce using rule 62 ($@4)
+    $default  reduce using rule 61 (decl_id)
+
+    $@4  go to state 146
+
+
+state 112
+
+   56 decl_stmt: TYPES decl_ids . SEMICOLON
+   59 decl_ids: decl_ids . COMMA decl_id
+
+    SEMICOLON  shift, and go to state 147
+    COMMA      shift, and go to state 148
+
+
+state 113
+
+   58 decl_ids: decl_id .
+
+    $default  reduce using rule 58 (decl_ids)
+
+
+state 114
+
+   88 relop: NE .
+
+    $default  reduce using rule 88 (relop)
+
+
+state 115
+
+   87 relop: EQ .
+
+    $default  reduce using rule 87 (relop)
+
+
+state 116
+
+   92 relop: GE .
+
+    $default  reduce using rule 92 (relop)
+
+
+state 117
+
+   91 relop: LE .
+
+    $default  reduce using rule 91 (relop)
+
+
+state 118
+
+   90 relop: GT .
+
+    $default  reduce using rule 90 (relop)
+
+
+state 119
+
+   89 relop: LT .
+
+    $default  reduce using rule 89 (relop)
+
+
+state 120
+
+   94 armop: MINUS .
+
+    $default  reduce using rule 94 (armop)
+
+
+state 121
+
+   93 armop: PLUS .
+
+    $default  reduce using rule 93 (armop)
+
+
+state 122
+
+   97 armop: MOD .
+
+    $default  reduce using rule 97 (armop)
+
+
+state 123
+
+   96 armop: DIVIDE .
+
+    $default  reduce using rule 96 (armop)
+
+
+state 124
+
+   95 armop: TIMES .
+
+    $default  reduce using rule 95 (armop)
+
+
+state 125
+
+   43 stmt: expr SEMICOLON .
+
+    $default  reduce using rule 43 (stmt)
+
+
+state 126
+
+   83 log_expr: expr relop . expr
+
+    NOT        shift, and go to state 59
+    ID         shift, and go to state 60
+    STRING     shift, and go to state 90
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    expr         go to state 149
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 83
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 127
+
+   78 arm_expr: expr armop . expr
+
+    NOT        shift, and go to state 59
+    ID         shift, and go to state 60
+    STRING     shift, and go to state 90
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    expr         go to state 150
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 83
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 128
+
+   81 log_expr: log_expr OR . log_expr
+
+    NOT        shift, and go to state 59
+    ID         shift, and go to state 60
+    STRING     shift, and go to state 90
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    expr         go to state 91
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 151
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 129
+
+   80 log_expr: log_expr AND . log_expr
+
+    NOT        shift, and go to state 59
+    ID         shift, and go to state 60
+    STRING     shift, and go to state 90
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    expr         go to state 91
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 152
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 130
+
+  114 brackets: LBRACKET . expr RBRACKET
+
+    NOT        shift, and go to state 59
+    ID         shift, and go to state 60
+    STRING     shift, and go to state 90
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    expr         go to state 153
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 83
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 131
+
+  107 array_acess: diff_ids brackets .
+  113 brackets: brackets . LBRACKET expr RBRACKET
+
+    LBRACKET  shift, and go to state 154
+
+    LBRACKET  [reduce using rule 107 (array_acess)]
+    $default  reduce using rule 107 (array_acess)
+
+
+state 132
+
+  104 mem_access: mem_access DOT . mem_access
+
+    ID  shift, and go to state 155
+
+    mem_access   go to state 156
+    method_call  go to state 157
+
+
+state 133
+
+  109 method_call: ID LPAREN RPAREN .
+
+    $default  reduce using rule 109 (method_call)
+
+
+state 134
+
+   78 arm_expr: expr . armop expr
+   83 log_expr: expr . relop expr
+  111 pass_args: expr .
+
+    NE      shift, and go to state 114
+    EQ      shift, and go to state 115
+    GE      shift, and go to state 116
+    LE      shift, and go to state 117
+    GT      shift, and go to state 118
+    LT      shift, and go to state 119
+    MINUS   shift, and go to state 120
+    PLUS    shift, and go to state 121
+    MOD     shift, and go to state 122
+    DIVIDE  shift, and go to state 123
+    TIMES   shift, and go to state 124
+
+    $default  reduce using rule 111 (pass_args)
+
+    relop  go to state 126
+    armop  go to state 127
+
+
+state 135
+
+  108 method_call: ID LPAREN pass_args . RPAREN
+  110 pass_args: pass_args . COMMA expr
+
+    COMMA   shift, and go to state 158
+    RPAREN  shift, and go to state 159
+
+
+state 136
+
+   70 asg_expr: ID asg_op expr .
+   78 arm_expr: expr . armop expr
+   83 log_expr: expr . relop expr
+
+    NE      shift, and go to state 114
+    EQ      shift, and go to state 115
+    GE      shift, and go to state 116
+    LE      shift, and go to state 117
+    GT      shift, and go to state 118
+    LT      shift, and go to state 119
+    MINUS   shift, and go to state 120
+    PLUS    shift, and go to state 121
+    MOD     shift, and go to state 122
+    DIVIDE  shift, and go to state 123
+    TIMES   shift, and go to state 124
+
+    NE        [reduce using rule 70 (asg_expr)]
+    EQ        [reduce using rule 70 (asg_expr)]
+    GE        [reduce using rule 70 (asg_expr)]
+    LE        [reduce using rule 70 (asg_expr)]
+    GT        [reduce using rule 70 (asg_expr)]
+    LT        [reduce using rule 70 (asg_expr)]
+    MINUS     [reduce using rule 70 (asg_expr)]
+    PLUS      [reduce using rule 70 (asg_expr)]
+    MOD       [reduce using rule 70 (asg_expr)]
+    DIVIDE    [reduce using rule 70 (asg_expr)]
+    TIMES     [reduce using rule 70 (asg_expr)]
+    $default  reduce using rule 70 (asg_expr)
+
+    relop  go to state 126
+    armop  go to state 127
+
+
+state 137
+
+   49 if_stmt: IF LPAREN log_expr . RPAREN stmt else_part
+   67 expr: log_expr .
+   80 log_expr: log_expr . AND log_expr
+   81         | log_expr . OR log_expr
+
+    OR      shift, and go to state 128
+    AND     shift, and go to state 129
+    RPAREN  shift, and go to state 160
+
+    $default  reduce using rule 67 (expr)
+
+
+state 138
+
+   52 while_stmt: WHILE LPAREN log_expr . RPAREN stmt
+   67 expr: log_expr .
+   80 log_expr: log_expr . AND log_expr
+   81         | log_expr . OR log_expr
+
+    OR      shift, and go to state 128
+    AND     shift, and go to state 129
+    RPAREN  shift, and go to state 161
+
+    $default  reduce using rule 67 (expr)
+
+
+state 139
+
+   53 for_stmt: FOR LPAREN expr . SEMICOLON log_expr SEMICOLON expr RPAREN stmt
+   78 arm_expr: expr . armop expr
+   83 log_expr: expr . relop expr
+
+    NE         shift, and go to state 114
+    EQ         shift, and go to state 115
+    GE         shift, and go to state 116
+    LE         shift, and go to state 117
+    GT         shift, and go to state 118
+    LT         shift, and go to state 119
+    MINUS      shift, and go to state 120
+    PLUS       shift, and go to state 121
+    MOD        shift, and go to state 122
+    DIVIDE     shift, and go to state 123
+    TIMES      shift, and go to state 124
+    SEMICOLON  shift, and go to state 162
+
+    relop  go to state 126
+    armop  go to state 127
+
+
+state 140
+
+   54 return_stmt: RETURN expr SEMICOLON .
+
+    $default  reduce using rule 54 (return_stmt)
+
+
+state 141
+
+   68 expr: LPAREN expr RPAREN .
+
+    $default  reduce using rule 68 (expr)
+
+
+state 142
+
+   84 log_expr: LPAREN log_expr RPAREN .
+
+    $default  reduce using rule 84 (log_expr)
+
+
+state 143
+
+   42 stmt: LBRACE stmt_list RBRACE .
+
+    $default  reduce using rule 42 (stmt)
+
+
+state 144
+
+   60 decl_ids: error SEMICOLON .
+
+    $default  reduce using rule 60 (decl_ids)
+
+
+state 145
+
+   64 decl_id: error COMMA .
+
+    $default  reduce using rule 64 (decl_id)
+
+
+state 146
+
+   63 decl_id: ID $@4 . ASSIGN expr
+
+    ASSIGN  shift, and go to state 163
+
+
+state 147
+
+   56 decl_stmt: TYPES decl_ids SEMICOLON .
+
+    $default  reduce using rule 56 (decl_stmt)
+
+
+state 148
+
+   59 decl_ids: decl_ids COMMA . decl_id
+
+    error  shift, and go to state 164
+    ID     shift, and go to state 111
+
+    decl_id  go to state 165
+
+
+state 149
+
+   78 arm_expr: expr . armop expr
+   83 log_expr: expr . relop expr
+   83         | expr relop expr .
+
+    NE      shift, and go to state 114
+    EQ      shift, and go to state 115
+    GE      shift, and go to state 116
+    LE      shift, and go to state 117
+    GT      shift, and go to state 118
+    LT      shift, and go to state 119
+    MINUS   shift, and go to state 120
+    PLUS    shift, and go to state 121
+    MOD     shift, and go to state 122
+    DIVIDE  shift, and go to state 123
+    TIMES   shift, and go to state 124
+
+    NE        [reduce using rule 83 (log_expr)]
+    EQ        [reduce using rule 83 (log_expr)]
+    GE        [reduce using rule 83 (log_expr)]
+    LE        [reduce using rule 83 (log_expr)]
+    GT        [reduce using rule 83 (log_expr)]
+    LT        [reduce using rule 83 (log_expr)]
+    MINUS     [reduce using rule 83 (log_expr)]
+    PLUS      [reduce using rule 83 (log_expr)]
+    MOD       [reduce using rule 83 (log_expr)]
+    DIVIDE    [reduce using rule 83 (log_expr)]
+    TIMES     [reduce using rule 83 (log_expr)]
+    $default  reduce using rule 83 (log_expr)
+
+    relop  go to state 126
+    armop  go to state 127
+
+
+state 150
+
+   78 arm_expr: expr . armop expr
+   78         | expr armop expr .
+   83 log_expr: expr . relop expr
+
+    NE      shift, and go to state 114
+    EQ      shift, and go to state 115
+    GE      shift, and go to state 116
+    LE      shift, and go to state 117
+    GT      shift, and go to state 118
+    LT      shift, and go to state 119
+    MINUS   shift, and go to state 120
+    PLUS    shift, and go to state 121
+    MOD     shift, and go to state 122
+    DIVIDE  shift, and go to state 123
+    TIMES   shift, and go to state 124
+
+    NE        [reduce using rule 78 (arm_expr)]
+    EQ        [reduce using rule 78 (arm_expr)]
+    GE        [reduce using rule 78 (arm_expr)]
+    LE        [reduce using rule 78 (arm_expr)]
+    GT        [reduce using rule 78 (arm_expr)]
+    LT        [reduce using rule 78 (arm_expr)]
+    MINUS     [reduce using rule 78 (arm_expr)]
+    PLUS      [reduce using rule 78 (arm_expr)]
+    MOD       [reduce using rule 78 (arm_expr)]
+    DIVIDE    [reduce using rule 78 (arm_expr)]
+    TIMES     [reduce using rule 78 (arm_expr)]
+    $default  reduce using rule 78 (arm_expr)
+
+    relop  go to state 126
+    armop  go to state 127
+
+
+state 151
+
+   67 expr: log_expr .
+   80 log_expr: log_expr . AND log_expr
+   81         | log_expr . OR log_expr
+   81         | log_expr OR log_expr .
+
+    AND  shift, and go to state 129
+
+    OR         reduce using rule 81 (log_expr)
+    NE         reduce using rule 67 (expr)
+    NE         [reduce using rule 81 (log_expr)]
+    EQ         reduce using rule 67 (expr)
+    EQ         [reduce using rule 81 (log_expr)]
+    GE         reduce using rule 67 (expr)
+    GE         [reduce using rule 81 (log_expr)]
+    LE         reduce using rule 67 (expr)
+    LE         [reduce using rule 81 (log_expr)]
+    GT         reduce using rule 67 (expr)
+    GT         [reduce using rule 81 (log_expr)]
+    LT         reduce using rule 67 (expr)
+    LT         [reduce using rule 81 (log_expr)]
+    MINUS      reduce using rule 67 (expr)
+    MINUS      [reduce using rule 81 (log_expr)]
+    PLUS       reduce using rule 67 (expr)
+    PLUS       [reduce using rule 81 (log_expr)]
+    MOD        reduce using rule 67 (expr)
+    MOD        [reduce using rule 81 (log_expr)]
+    DIVIDE     reduce using rule 67 (expr)
+    DIVIDE     [reduce using rule 81 (log_expr)]
+    TIMES      reduce using rule 67 (expr)
+    TIMES      [reduce using rule 81 (log_expr)]
+    SEMICOLON  reduce using rule 81 (log_expr)
+    COMMA      reduce using rule 81 (log_expr)
+    RPAREN     reduce using rule 81 (log_expr)
+    RBRACKET   reduce using rule 81 (log_expr)
+    $default   reduce using rule 67 (expr)
+
+
+state 152
+
+   67 expr: log_expr .
+   80 log_expr: log_expr . AND log_expr
+   80         | log_expr AND log_expr .
+   81         | log_expr . OR log_expr
+
+    OR         reduce using rule 80 (log_expr)
+    AND        reduce using rule 80 (log_expr)
+    NE         reduce using rule 67 (expr)
+    NE         [reduce using rule 80 (log_expr)]
+    EQ         reduce using rule 67 (expr)
+    EQ         [reduce using rule 80 (log_expr)]
+    GE         reduce using rule 67 (expr)
+    GE         [reduce using rule 80 (log_expr)]
+    LE         reduce using rule 67 (expr)
+    LE         [reduce using rule 80 (log_expr)]
+    GT         reduce using rule 67 (expr)
+    GT         [reduce using rule 80 (log_expr)]
+    LT         reduce using rule 67 (expr)
+    LT         [reduce using rule 80 (log_expr)]
+    MINUS      reduce using rule 67 (expr)
+    MINUS      [reduce using rule 80 (log_expr)]
+    PLUS       reduce using rule 67 (expr)
+    PLUS       [reduce using rule 80 (log_expr)]
+    MOD        reduce using rule 67 (expr)
+    MOD        [reduce using rule 80 (log_expr)]
+    DIVIDE     reduce using rule 67 (expr)
+    DIVIDE     [reduce using rule 80 (log_expr)]
+    TIMES      reduce using rule 67 (expr)
+    TIMES      [reduce using rule 80 (log_expr)]
+    SEMICOLON  reduce using rule 80 (log_expr)
+    COMMA      reduce using rule 80 (log_expr)
+    RPAREN     reduce using rule 80 (log_expr)
+    RBRACKET   reduce using rule 80 (log_expr)
+    $default   reduce using rule 67 (expr)
+
+
+state 153
+
+   78 arm_expr: expr . armop expr
+   83 log_expr: expr . relop expr
+  114 brackets: LBRACKET expr . RBRACKET
+
+    NE        shift, and go to state 114
+    EQ        shift, and go to state 115
+    GE        shift, and go to state 116
+    LE        shift, and go to state 117
+    GT        shift, and go to state 118
+    LT        shift, and go to state 119
+    MINUS     shift, and go to state 120
+    PLUS      shift, and go to state 121
+    MOD       shift, and go to state 122
+    DIVIDE    shift, and go to state 123
+    TIMES     shift, and go to state 124
+    RBRACKET  shift, and go to state 166
+
+    relop  go to state 126
+    armop  go to state 127
+
+
+state 154
+
+  113 brackets: brackets LBRACKET . expr RBRACKET
+
+    NOT        shift, and go to state 59
+    ID         shift, and go to state 60
+    STRING     shift, and go to state 90
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    expr         go to state 167
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 83
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 155
+
+  105 mem_access: ID .
+  108 method_call: ID . LPAREN pass_args RPAREN
+  109            | ID . LPAREN RPAREN
+
+    LPAREN  shift, and go to state 95
+
+    $default  reduce using rule 105 (mem_access)
+
+
+state 156
+
+  104 mem_access: mem_access . DOT mem_access
+  104           | mem_access DOT mem_access .
+
+    $default  reduce using rule 104 (mem_access)
+
+
+state 157
+
+  106 mem_access: method_call .
+
+    $default  reduce using rule 106 (mem_access)
+
+
+state 158
+
+  110 pass_args: pass_args COMMA . expr
+
+    NOT        shift, and go to state 59
+    ID         shift, and go to state 60
+    STRING     shift, and go to state 90
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    expr         go to state 168
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 83
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 159
+
+  108 method_call: ID LPAREN pass_args RPAREN .
+
+    $default  reduce using rule 108 (method_call)
+
+
+state 160
+
+   49 if_stmt: IF LPAREN log_expr RPAREN . stmt else_part
+
+    error      shift, and go to state 58
+    NOT        shift, and go to state 59
+    INT        shift, and go to state 24
+    DOUBLE     shift, and go to state 25
+    BOOLEAN    shift, and go to state 26
+    CHAR       shift, and go to state 27
+    ID         shift, and go to state 60
+    FLOAT      shift, and go to state 28
+    VOID       shift, and go to state 29
+    STRING     shift, and go to state 61
+    IF         shift, and go to state 62
+    WHILE      shift, and go to state 63
+    FOR        shift, and go to state 64
+    RETURN     shift, and go to state 65
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    LBRACE     shift, and go to state 69
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    TYPES        go to state 73
+    TYPE         go to state 32
+    stmt         go to state 169
+    if_stmt      go to state 75
+    while_stmt   go to state 76
+    for_stmt     go to state 77
+    return_stmt  go to state 78
+    decl_stmt    go to state 79
+    expr         go to state 80
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 83
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 161
+
+   52 while_stmt: WHILE LPAREN log_expr RPAREN . stmt
+
+    error      shift, and go to state 58
+    NOT        shift, and go to state 59
+    INT        shift, and go to state 24
+    DOUBLE     shift, and go to state 25
+    BOOLEAN    shift, and go to state 26
+    CHAR       shift, and go to state 27
+    ID         shift, and go to state 60
+    FLOAT      shift, and go to state 28
+    VOID       shift, and go to state 29
+    STRING     shift, and go to state 61
+    IF         shift, and go to state 62
+    WHILE      shift, and go to state 63
+    FOR        shift, and go to state 64
+    RETURN     shift, and go to state 65
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    LBRACE     shift, and go to state 69
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    TYPES        go to state 73
+    TYPE         go to state 32
+    stmt         go to state 170
+    if_stmt      go to state 75
+    while_stmt   go to state 76
+    for_stmt     go to state 77
+    return_stmt  go to state 78
+    decl_stmt    go to state 79
+    expr         go to state 80
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 83
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 162
+
+   53 for_stmt: FOR LPAREN expr SEMICOLON . log_expr SEMICOLON expr RPAREN stmt
+
+    NOT        shift, and go to state 59
+    ID         shift, and go to state 60
+    STRING     shift, and go to state 90
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    expr         go to state 91
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 171
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 163
+
+   63 decl_id: ID $@4 ASSIGN . expr
+
+    NOT        shift, and go to state 59
+    ID         shift, and go to state 60
+    STRING     shift, and go to state 90
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    expr         go to state 172
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 83
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 164
+
+   64 decl_id: error . COMMA
+
+    COMMA  shift, and go to state 145
+
+
+state 165
+
+   59 decl_ids: decl_ids COMMA decl_id .
+
+    $default  reduce using rule 59 (decl_ids)
+
+
+state 166
+
+  114 brackets: LBRACKET expr RBRACKET .
+
+    $default  reduce using rule 114 (brackets)
+
+
+state 167
+
+   78 arm_expr: expr . armop expr
+   83 log_expr: expr . relop expr
+  113 brackets: brackets LBRACKET expr . RBRACKET
+
+    NE        shift, and go to state 114
+    EQ        shift, and go to state 115
+    GE        shift, and go to state 116
+    LE        shift, and go to state 117
+    GT        shift, and go to state 118
+    LT        shift, and go to state 119
+    MINUS     shift, and go to state 120
+    PLUS      shift, and go to state 121
+    MOD       shift, and go to state 122
+    DIVIDE    shift, and go to state 123
+    TIMES     shift, and go to state 124
+    RBRACKET  shift, and go to state 173
+
+    relop  go to state 126
+    armop  go to state 127
+
+
+state 168
+
+   78 arm_expr: expr . armop expr
+   83 log_expr: expr . relop expr
+  110 pass_args: pass_args COMMA expr .
+
+    NE      shift, and go to state 114
+    EQ      shift, and go to state 115
+    GE      shift, and go to state 116
+    LE      shift, and go to state 117
+    GT      shift, and go to state 118
+    LT      shift, and go to state 119
+    MINUS   shift, and go to state 120
+    PLUS    shift, and go to state 121
+    MOD     shift, and go to state 122
+    DIVIDE  shift, and go to state 123
+    TIMES   shift, and go to state 124
+
+    $default  reduce using rule 110 (pass_args)
+
+    relop  go to state 126
+    armop  go to state 127
+
+
+state 169
+
+   49 if_stmt: IF LPAREN log_expr RPAREN stmt . else_part
+
+    ELSE  shift, and go to state 174
+
+    ELSE      [reduce using rule 51 (else_part)]
+    $default  reduce using rule 51 (else_part)
+
+    else_part  go to state 175
+
+
+state 170
+
+   52 while_stmt: WHILE LPAREN log_expr RPAREN stmt .
+
+    $default  reduce using rule 52 (while_stmt)
+
+
+state 171
+
+   53 for_stmt: FOR LPAREN expr SEMICOLON log_expr . SEMICOLON expr RPAREN stmt
+   67 expr: log_expr .
+   80 log_expr: log_expr . AND log_expr
+   81         | log_expr . OR log_expr
+
+    OR         shift, and go to state 128
+    AND        shift, and go to state 129
+    SEMICOLON  shift, and go to state 176
+
+    $default  reduce using rule 67 (expr)
+
+
+state 172
+
+   63 decl_id: ID $@4 ASSIGN expr .
+   78 arm_expr: expr . armop expr
+   83 log_expr: expr . relop expr
+
+    NE      shift, and go to state 114
+    EQ      shift, and go to state 115
+    GE      shift, and go to state 116
+    LE      shift, and go to state 117
+    GT      shift, and go to state 118
+    LT      shift, and go to state 119
+    MINUS   shift, and go to state 120
+    PLUS    shift, and go to state 121
+    MOD     shift, and go to state 122
+    DIVIDE  shift, and go to state 123
+    TIMES   shift, and go to state 124
+
+    $default  reduce using rule 63 (decl_id)
+
+    relop  go to state 126
+    armop  go to state 127
+
+
+state 173
+
+  113 brackets: brackets LBRACKET expr RBRACKET .
+
+    $default  reduce using rule 113 (brackets)
+
+
+state 174
+
+   50 else_part: ELSE . stmt
+
+    error      shift, and go to state 58
+    NOT        shift, and go to state 59
+    INT        shift, and go to state 24
+    DOUBLE     shift, and go to state 25
+    BOOLEAN    shift, and go to state 26
+    CHAR       shift, and go to state 27
+    ID         shift, and go to state 60
+    FLOAT      shift, and go to state 28
+    VOID       shift, and go to state 29
+    STRING     shift, and go to state 61
+    IF         shift, and go to state 62
+    WHILE      shift, and go to state 63
+    FOR        shift, and go to state 64
+    RETURN     shift, and go to state 65
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    LBRACE     shift, and go to state 69
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    TYPES        go to state 73
+    TYPE         go to state 32
+    stmt         go to state 177
+    if_stmt      go to state 75
+    while_stmt   go to state 76
+    for_stmt     go to state 77
+    return_stmt  go to state 78
+    decl_stmt    go to state 79
+    expr         go to state 80
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 83
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 175
+
+   49 if_stmt: IF LPAREN log_expr RPAREN stmt else_part .
+
+    $default  reduce using rule 49 (if_stmt)
+
+
+state 176
+
+   53 for_stmt: FOR LPAREN expr SEMICOLON log_expr SEMICOLON . expr RPAREN stmt
+
+    NOT        shift, and go to state 59
+    ID         shift, and go to state 60
+    STRING     shift, and go to state 90
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    expr         go to state 178
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 83
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 177
+
+   50 else_part: ELSE stmt .
+
+    $default  reduce using rule 50 (else_part)
+
+
+state 178
+
+   53 for_stmt: FOR LPAREN expr SEMICOLON log_expr SEMICOLON expr . RPAREN stmt
+   78 arm_expr: expr . armop expr
+   83 log_expr: expr . relop expr
+
+    NE      shift, and go to state 114
+    EQ      shift, and go to state 115
+    GE      shift, and go to state 116
+    LE      shift, and go to state 117
+    GT      shift, and go to state 118
+    LT      shift, and go to state 119
+    MINUS   shift, and go to state 120
+    PLUS    shift, and go to state 121
+    MOD     shift, and go to state 122
+    DIVIDE  shift, and go to state 123
+    TIMES   shift, and go to state 124
+    RPAREN  shift, and go to state 179
+
+    relop  go to state 126
+    armop  go to state 127
+
+
+state 179
+
+   53 for_stmt: FOR LPAREN expr SEMICOLON log_expr SEMICOLON expr RPAREN . stmt
+
+    error      shift, and go to state 58
+    NOT        shift, and go to state 59
+    INT        shift, and go to state 24
+    DOUBLE     shift, and go to state 25
+    BOOLEAN    shift, and go to state 26
+    CHAR       shift, and go to state 27
+    ID         shift, and go to state 60
+    FLOAT      shift, and go to state 28
+    VOID       shift, and go to state 29
+    STRING     shift, and go to state 61
+    IF         shift, and go to state 62
+    WHILE      shift, and go to state 63
+    FOR        shift, and go to state 64
+    RETURN     shift, and go to state 65
+    CHARACTER  shift, and go to state 66
+    NUMBER     shift, and go to state 67
+    LPAREN     shift, and go to state 68
+    LBRACE     shift, and go to state 69
+    TRUE       shift, and go to state 71
+    FALSE      shift, and go to state 72
+
+    TYPES        go to state 73
+    TYPE         go to state 32
+    stmt         go to state 180
+    if_stmt      go to state 75
+    while_stmt   go to state 76
+    for_stmt     go to state 77
+    return_stmt  go to state 78
+    decl_stmt    go to state 79
+    expr         go to state 80
+    asg_expr     go to state 81
+    arm_expr     go to state 82
+    log_expr     go to state 83
+    literal      go to state 84
+    diff_ids     go to state 85
+    mem_access   go to state 86
+    array_acess  go to state 87
+    method_call  go to state 88
+
+
+state 180
+
+   53 for_stmt: FOR LPAREN expr SEMICOLON log_expr SEMICOLON expr RPAREN stmt .
+
+    $default  reduce using rule 53 (for_stmt)
