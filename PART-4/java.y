@@ -108,7 +108,9 @@
             }else if(icg[i]->operation[0]=='p'){
                 printf("%2d %s %s\n",i,icg[i]->operation,icg[i]->operand1);
             }else if(icg[i]->operation[0]=='c'){
-                printf("%2d %s %s %s\n",i,icg[i]->operation,icg[i]->operand1,icg[i]->operand2);
+                printf("%2d %s = %s %s\n",i,icg[i]->result,icg[i]->operation,icg[i]->operand1,icg[i]->operand2);
+            }else if(icg[i]->operation[0]=='r'){
+                printf("%2d %s %s\n",i,icg[i]->operation ,icg[i]->result);
             }else
             printf("%2d %s = %s %s %s\n",i,icg[i]->result,icg[i]->operand1,icg[i]->operation,icg[i]->operand2);
         }
@@ -121,8 +123,8 @@
         struct TreeNode* node;
     };
 
-    %define parse.error verbose
-    %debug
+    %error-verbose
+    
     
     
 
@@ -131,7 +133,9 @@
     %token<symEntry> IF ELSE WHILE FOR RETURN MAIN ARGS CHARACTER NUMBER ERROR INC DEC
     %token<symEntry> SEMICOLON COMMA LPAREN RPAREN LBRACE RBRACE
     %token<symEntry> AND OR NOT DOT LBRACKET RBRACKET EQ NE LT GT LE GE TRUE FALSE
-    %token<symEntry>  TIMES PLUS MINUS  DIVIDE MOD  PLUSASG MINUSASG TIMESASG DIVIDEASG ASSIGN
+    %left<symEntry> TIMES DIVIDE MOD 
+    %left<symEntry>  PLUS MINUS 
+    %left<symEntry> PLUSASG MINUSASG TIMESASG DIVIDEASG ASSIGN
 
     %type<node> program member_decl_list member_decl member_second_part class_decl class_decl_list
     %type<node> mdfr arg_list arg decl_ids decl_id stmt_list stmt
@@ -142,6 +146,7 @@
     %type<node> TYPES access_modfr  M N
 
     %start program
+    
 
 %%
 
@@ -258,18 +263,17 @@ stmt : LBRACE stmt_list RBRACE {  $$ = create_tree_node("stmt",st_stmt_list, 1, 
         | for_stmt {  $$ = $1; }| return_stmt {  $$ = $1; }| decl_stmt {  $$ = $1; }
         ;
 
-if_stmt : IF LPAREN log_expr RPAREN M stmt {
+if_stmt :  IF LPAREN log_expr RPAREN M stmt ELSE N M stmt {
+            struct TreeNode *n1=copy_entry_to_node($1);
+            $$ = create_tree_node("if_stmt", st_if, 4, n1, $3, $6, $10);
+            backpatch($3->trueList,$5->nextList->current);
+            backpatch($3->falseList,$9->nextList->current);
+            $$->nextList=mergeLists(mergeLists($6->nextList,$8->nextList),$10->nextList);
+        }| IF LPAREN log_expr RPAREN M stmt {
             struct TreeNode *n1=copy_entry_to_node($1);
             $$ = create_tree_node("if_stmt", st_if, 3, n1, $3, $6);
             backpatch($3->trueList,$5->nextList->current);
             $$->nextList=mergeLists($3->falseList,$6->nextList);
-        }| IF LPAREN log_expr RPAREN M stmt N ELSE M stmt {
-            struct TreeNode *n1=copy_entry_to_node($1);
-            $$ = create_tree_node("if_stmt", st_if, 4, n1, $3, $6, $10);
-            printf("else is there\n ");
-            backpatch($3->trueList,$5->nextList->current);
-            backpatch($3->falseList,$9->nextList->current);
-            $$->nextList=mergeLists(mergeLists($6->nextList,$7->nextList),$10->nextList);
         }
         ;
 N          : { $$=create_tree_node("N",st_if,0); $$->nextList=newList(indx); codeGen("goto", "", "", "");} ;    
@@ -286,18 +290,15 @@ while_stmt : WHILE M LPAREN log_expr RPAREN M stmt {
         }
         ;
 
-for_stmt : FOR LPAREN expr SEMICOLON log_expr SEMICOLON M expr RPAREN stmt {
+for_stmt : FOR LPAREN expr SEMICOLON M log_expr SEMICOLON M expr RPAREN N stmt {
             struct TreeNode *n1=copy_entry_to_node($1);
             $$ = create_tree_node("for_stmt", st_for, 5, n1, $3, $5, $8, $10);
-
-            backpatch($8->nextList,$2->nextList->current);
-            backpatch($5->trueList,$9->nextList->current);
-            // backpatch($5->falseList,$10->nextList->current);
-            // $$->nextList=$5->falseList;
-            // char *x=malloc(10);
-            // sprintf(x,"L%d",$2->nextList->current);
-            // codeGen("goto", "", "", x);
-
+            backpatch($6->trueList,$11->nextList->current+1);
+            backpatch($11->nextList,$5->nextList->current);
+            $$->nextList=mergeLists($6->falseList,$12->nextList);
+            char *x=malloc(10);
+            sprintf(x,"L%d",$8->nextList->current);
+            codeGen("goto", "", "", x);
         };
 
 return_stmt : RETURN expr SEMICOLON {
@@ -336,7 +337,7 @@ decl_id : ID {
         } ASSIGN expr {
             struct TreeNode *n1=copy_entry_to_node($1);
             struct TreeNode *n3= copy_entry_to_node($3);
-            codeGen("=", $1->lexeme, $4->name, "");
+            codeGen("=", $4->name,"", $1->lexeme);
             $$ = create_tree_node("assign_expr",st_expr, 3, n3, n1, $4);
         }
         | error COMMA { yyerror("Syntax error"); $$ = NULL; } 
@@ -345,6 +346,15 @@ expr    : asg_expr { $$=$1; } | arm_expr { $$=$1; }
         | log_expr { $$=$1; } | LPAREN expr RPAREN { $$=$2; } 
         | diff_ids { $$=$1; } ;
 
+arm_expr    : expr armop expr {
+                checkType($1,$3,yylineno);
+                $$ = create_tree_node(new_temp(),st_expr, 3, $2, $1, $3);
+                setDataType($$, $1->dataType);
+                codeGen($2->name, $1->name, $3->name, $$->name);
+            }| literal { $$=$1; } ;
+armop       :  TIMES{ $$=copy_entry_to_node($1); }
+            | DIVIDE{ $$=copy_entry_to_node($1); }| MOD{ $$=copy_entry_to_node($1); }
+            | PLUS{ $$=copy_entry_to_node($1); }| MINUS{ $$=copy_entry_to_node($1); };
 asg_expr : ID asg_op expr {
             is_defined($1);
             struct TreeNode *n1=copy_entry_to_node($1);
@@ -374,12 +384,6 @@ asg_op      : PLUSASG { $$=copy_entry_to_node($1); } |MINUSASG { $$=copy_entry_t
             | TIMESASG { $$=copy_entry_to_node($1); } | DIVIDEASG { $$=copy_entry_to_node($1); } 
             | ASSIGN { $$=copy_entry_to_node($1); };
 
-arm_expr    : expr armop expr {
-                checkType($1,$3,yylineno);
-                $$ = create_tree_node(new_temp(),st_expr, 3, $2, $1, $3);
-                setDataType($$, $1->dataType);
-                codeGen($2->name, $1->name, $3->name, $$->name);
-            }| literal { $$=$1; } ;
 
 log_expr    : log_expr AND M log_expr {
                 checkType($1,$4,yylineno);
@@ -436,9 +440,7 @@ log_expr    : log_expr AND M log_expr {
 
 relop       : EQ { $$=copy_entry_to_node($1); }| NE{ $$=copy_entry_to_node($1); }| LT{ $$=copy_entry_to_node($1); }
             | GT{ $$=copy_entry_to_node($1); }| LE{ $$=copy_entry_to_node($1); }| GE { $$=copy_entry_to_node($1); };
-armop       :  TIMES{ $$=copy_entry_to_node($1); }
-            | DIVIDE{ $$=copy_entry_to_node($1); }| MOD{ $$=copy_entry_to_node($1); }
-            | PLUS{ $$=copy_entry_to_node($1); }| MINUS{ $$=copy_entry_to_node($1); };
+            
 literal     : NUMBER { $$=copy_entry_to_node($1); }| STRING{ $$=copy_entry_to_node($1); }| CHARACTER { $$=copy_entry_to_node($1); };
 diff_ids    : mem_access  { $$=$1; } | array_acess { $$ = $1; } | method_call { $$ = $1; };
 
@@ -466,13 +468,13 @@ method_call : ID LPAREN pass_args RPAREN {
                 is_method($1);
                 check_method_args($1,$3,yylineno);
                 struct TreeNode *n1=copy_entry_to_node($1); 
-                $$ = create_tree_node("method_call",st_method_call, 2, n1, $3);
+                $$ = create_tree_node(new_temp(),st_method_call, 2, n1, $3);
                 setDataType($$, $1->dataType);
                 setDimension($$, 0);
                 for(int i=0;i<$3->num_children;i++){
                     codeGen("param", $3->children[i]->name, "", "");
                 } 
-                codeGen("call", $1->lexeme, "", "");
+                codeGen("call", $1->lexeme, "",$$->name); 
 
                  }
             | ID LPAREN RPAREN { 
@@ -480,7 +482,8 @@ method_call : ID LPAREN pass_args RPAREN {
                 is_method($1);
                 check_method_args($1,NULL,yylineno);
                 struct TreeNode *n1=copy_entry_to_node($1);
-                $$ = create_tree_node("method_call", st_method_call,1,n1); 
+                $$ = create_tree_node(new_temp, st_method_call,1,n1); 
+                codeGen("call", $1->lexeme, "",$$->name); 
             };
 
 pass_args   : pass_args COMMA expr { 
